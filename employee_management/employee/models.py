@@ -37,8 +37,23 @@ class Employee(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Leave(models.Model):
+    MONTH_CHOICES = [
+        ('January', 'January'),
+        ('February', 'February'),
+        ('March', 'March'),
+        ('April', 'April'),
+        ('May', 'May'),
+        ('June', 'June'),
+        ('July', 'July'),
+        ('August', 'August'),
+        ('September', 'September'),
+        ('October', 'October'),
+        ('November', 'November'),
+        ('December', 'December'),
+    ]
+
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    month = models.CharField(max_length=10)
+    month = models.CharField(max_length=10, choices=MONTH_CHOICES)
     sl_taken = models.FloatField(default=0.0)
     cl_taken = models.FloatField(default=0.0)
 

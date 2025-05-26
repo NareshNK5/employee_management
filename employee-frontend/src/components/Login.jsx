@@ -15,6 +15,7 @@ const Login = () => {
       localStorage.setItem('access', res.data.access);
       localStorage.setItem('refresh', res.data.refresh);
       localStorage.setItem('role', res.data.role);
+      localStorage.setItem('userId', res.data.id);
       navigate('/');
     } catch (err) {
       setError('Invalid email or password');

@@ -9,9 +9,11 @@ from .models import Employee, Leave
 from .serializers import EmployeeSerializer, LeaveSerializer
 
 @api_view(['POST'])
+@permission_classes([permissions.AllowAny])
 def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
+    print(email,password)
     user = authenticate(request, email=email, password=password)
     if user:
         refresh = RefreshToken.for_user(user)
@@ -20,7 +22,8 @@ def login_view(request):
             "refresh": str(refresh),
             "role": user.role,
             "email": user.email,
-            "name": user.name
+            "name": user.name,
+            "id": user.id
         })
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -62,7 +65,7 @@ def employee_detail(request, pk):
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = EmployeeSerializer(employee, data=request.data)
+        serializer = EmployeeSerializer(employee, data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -75,15 +78,21 @@ def employee_detail(request, pk):
 @api_view(['GET', 'POST'])
 @permission_classes([permissions.IsAuthenticated])
 def leave_list(request):
+    user = request.user
     if request.method == 'GET':
         leaves = Leave.objects.all()
         serializer = LeaveSerializer(leaves, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = LeaveSerializer(data=request.data)
+        data = request.data.copy()
+        data['employee'] = user.id
+        serializer = LeaveSerializer(data=data)
+        print(serializer)
         if serializer.is_valid():
+            print("valid")
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

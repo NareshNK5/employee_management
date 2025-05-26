@@ -1,15 +1,46 @@
 import axios from 'axios';
+import { refreshAccessToken } from './auth';
 
-const API = axios.create({
-  baseURL: 'http://127.0.0.1:8000/', // Update if deployed
+const api = axios.create({
+  baseURL: 'http://127.0.0.1:8000/api/',
 });
 
-API.interceptors.request.use(config => {
-  const token = localStorage.getItem('access');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+api.interceptors.request.use(
+  async (config) => {
+    const accessToken = localStorage.getItem('access');
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      localStorage.getItem('refresh')
+    ) {
+      originalRequest._retry = true;
+      const newAccessToken = await refreshAccessToken();
+
+      if (newAccessToken) {
+        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        return api(originalRequest);
+      } else {
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+      }
+    }
+
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
-export default API;
+export default api;

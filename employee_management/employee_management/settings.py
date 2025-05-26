@@ -147,3 +147,8 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'employee.Employee'
+
+AUTHENTICATION_BACKENDS = [
+    'employee.accounts.auth_backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

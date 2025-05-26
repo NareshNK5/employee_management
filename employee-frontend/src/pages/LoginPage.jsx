@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import API from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post('/login/', { email, password });
+      const res = await axios.post('http://127.0.0.1:8000/api/login/', { email, password });
       localStorage.setItem('access', res.data.access);
       localStorage.setItem('refresh', res.data.refresh);
       localStorage.setItem('role', res.data.role);
