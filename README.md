@@ -47,20 +47,20 @@ Setup Instructions
 
 1.  Create a virtual environment:
 
-    ```bash
+```bash
 python -m venv venv
 source venv/bin/activate
 ```
 
 2.  Install dependencies:
 
-    ```bash
+```bash
 pip install -r requirements.txt
 ```
 
 3.  Configure `settings.py` for MySQL:
 
-    ```python
+```python
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -75,14 +75,14 @@ DATABASES = {
 
 4.  Run migrations:
 
-    ```bash
+```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
 5.  Start server:
 
-    ```bash
+```bash
 python manage.py runserver
 ```
 
@@ -90,13 +90,13 @@ python manage.py runserver
 
 1.  Install dependencies:
 
-    ```bash
+```bash
 npm install
 ```
 
 2.  Start frontend:
 
-    ```bash
+```bash
 npm run dev
 ```
 
@@ -109,4 +109,4 @@ MySQL Features
 Demo and Links
 --------------
 
-*   GitHub Repository: [Insert your GitHub link here]
+*   GitHub Repository: https://github.com/NareshNK5/employee_management/
